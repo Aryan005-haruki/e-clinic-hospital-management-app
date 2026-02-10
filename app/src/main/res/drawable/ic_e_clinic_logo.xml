@@ -1,0 +1,34 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="200"
+    android:viewportHeight="200">
+
+    <!-- Shield Background -->
+    <path android:pathData="M100,10 L30,40 L30,90 C30,140 100,190 100,190 C100,190 170,140 170,90 L170,40 L100,10 Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:startY="10"
+                android:startX="100"
+                android:endY="190"
+                android:endX="100"
+                android:type="linear">
+                <item android:offset="0" android:color="#0D47A1"/> <!-- Blue -->
+                <item android:offset="1" android:color="#388E3C"/> <!-- Green -->
+            </gradient>
+        </aapt:attr>
+    </path>
+
+    <!-- White Border -->
+    <path
+        android:pathData="M100,15 L165,42.5 L165,90 C165,136 100,183 100,183 C100,183 35,136 35,90 L35,42.5 L100,15 Z"
+        android:strokeWidth="2"
+        android:strokeColor="#FFFFFF"/>
+
+    <!-- Medical Cross -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M85,60 H115 V90 H145 V120 H115 V150 H85 V120 H55 V90 H85 V60 Z" />
+
+</vector>

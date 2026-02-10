@@ -1,0 +1,110 @@
+// INSTRUCTIONS TO FIX DOCTOR LOGIN
+// The doctor login is failing because there are NO doctors in the Firestore database.
+
+// FIREBASE CONSOLE SETUP (REQUIRED):
+// ================================
+// 1. Go to Firebase Console: https://console.firebase.google.com
+// 2. Select your project "Tatwa" (or create one if needed)
+// 3. Go to Firestore Database → Create database (if not created)
+// 4. Create a collection named: "Doctors"
+// 5. Add sample doctor documents manually:
+
+// Sample Doctor Document Structure:
+// ==================================
+// Collection: Doctors
+// Document ID: (auto-generated)
+// Fields:
+{
+  "name": "Dr. Ajay Kumar",        // String (must match exactly with doctors_name array)
+  "password": "doctor123",         // String (minimum 8 characters)
+  "specification": "Cardiologist", // String
+  "qualifications": "MBBS, MD",    // String
+  "description": "Heart Specialist", // String
+  "imageUri": 0,                   // Number
+  "slotToday": [],                 // Array (empty)
+  "slotTomorrow": []               // Array (empty)
+}
+
+// QUICK FIX - Add These 3 Doctors to Firestore:
+// ==============================================
+
+// Doctor 1:
+{
+  "name": "Dr. Ajay Kumar",
+  "password": "ajay12345",
+  "specification": "Cardiologist",
+  "qualifications": "MBBS, MD Cardiology",
+  "description": "Experienced Cardiologist",
+  "imageUri": 0,
+  "slotToday": [],
+  "slotTomorrow": []
+}
+
+// Doctor 2:
+{
+  "name": "Dr. Saurav Kalsoor",
+  "password": "saurav123",
+  "specification": "General Physician",
+  "qualifications": "MBBS",
+  "description": "General Physician",
+  "imageUri": 0,
+  "slotToday": [],
+  "slotTomorrow": []
+}
+
+// Doctor 3:
+{
+  "name": "Dr. Abhinav Thakur",
+  "password": "abhinav12",
+  "specification": "Neurologist",
+  "qualifications": "MBBS, MD Neurology",
+  "description": "Brain Specialist",
+  "imageUri": 0,
+  "slotToday": [],
+  "slotTomorrow": []
+}
+
+// HOW TO ADD IN FIREBASE CONSOLE:
+// ================================
+// 1. Go to Firestore Database
+// 2. Click "Start collection"
+// 3. Collection ID: "Doctors"
+// 4. Click "Next"
+// 5. Add each field as shown above
+// 6. Set correct data type (String, Number, Array)
+// 7. Click "Save"
+// 8. Repeat for other doctors
+
+// ALTERNATIVE: Use this code in a temporary activity to auto-populate:
+// ====================================================================
+/*
+FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+Doctor doc1 = new Doctor("Dr. Ajay Kumar", "ajay12345");
+doc1.setSpecification("Cardiologist");
+doc1.setQualifications("MBBS, MD Cardiology");
+doc1.setDescription("Experienced Cardiologist");
+
+db.collection("Doctors").add(doc1);
+
+// Repeat for other doctors
+*/
+
+// TESTING:
+// ========
+// 1. After adding doctors to Firestore
+// 2. Launch app → Select "Doctor"
+// 3. Select doctor name from spinner
+// 4. Enter password (e.g., "ajay12345")
+// 5. Click Login
+// 6. Should work!
+
+// PATIENT OTP FIX:
+// ================
+// For Patient OTP to work, you need:
+// 1. Firebase Console → Authentication → Sign-in method → Enable "Phone"
+// 2. Get SHA-1 fingerprint:
+//    gradlew signingReport
+// 3. Add SHA-1 to Firebase Console → Project Settings → Your apps
+// 4. Download new google-services.json
+// 5. Replace old google-services.json in app/ folder
