@@ -13,28 +13,30 @@ import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
+import android.net.Uri;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.tatwa10.Fragments.AddMedicalRecordFragment;
-import com.example.tatwa10.Fragments.AppointmentFragment;
-import com.example.tatwa10.Fragments.DeveloperFragment;
-import com.example.tatwa10.Fragments.EditProfileFragment;
-import com.example.tatwa10.Fragments.FindDoctorsFragment;
-import com.example.tatwa10.Fragments.HomeFragment;
-import com.example.tatwa10.Fragments.MedicalRecordsFragment;
-import com.example.tatwa10.Fragments.HealthPrecautionFragment;
-import com.example.tatwa10.Fragments.PrescriptionFragment;
-import com.example.tatwa10.ModelClass.Profile;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
+
+import de.hdodenhof.circleimageview.CircleImageView;
+
+import com.example.tatwa10.Fragments.AppointmentFragment;
+import com.example.tatwa10.Fragments.EditProfileFragment;
+import com.example.tatwa10.Fragments.FindDoctorsFragment;
+import com.example.tatwa10.Fragments.HomeFragment;
+import com.example.tatwa10.Fragments.HealthPrecautionFragment;
+import com.example.tatwa10.Fragments.PrescriptionFragment;
+import com.google.android.material.navigation.NavigationView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,65 +67,35 @@ public class MainActivity extends AppCompatActivity {
 
         navigationView = findViewById(R.id.nav_view);
 
-        // DIRECT ACCESS MODE: Removed Firebase patient data fetching
-        // All data will be stored and retrieved locally
-        /*
-         * CollectionReference collectionReference =
-         * FirebaseFirestore.getInstance().collection("Patients");
-         * collectionReference.whereEqualTo("phone", authNumber).get()
-         * .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-         * 
-         * @Override
-         * public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-         * for (DocumentSnapshot doc : queryDocumentSnapshots) {
-         * Profile profile = doc.toObject(Profile.class);
-         * if (profile != null) {
-         * patientName = profile.getName();
-         * }
-         * break;
-         * }
-         * }
-         * });
-         */
-
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 int itemId = item.getItemId();
                 if (itemId == R.id.nav_home) {
+                    currentFragment = "home";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, new HomeFragment()).commit();
                 } else if (itemId == R.id.nav_doctors) {
+                    currentFragment = "doctors";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, new FindDoctorsFragment()).commit();
                 } else if (itemId == R.id.nav_appointment) {
+                    currentFragment = "appointment";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, new AppointmentFragment()).commit();
                 } else if (itemId == R.id.nav_prescription) {
+                    currentFragment = "prescription";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, new PrescriptionFragment()).commit();
                 } else if (itemId == R.id.nav_edit_profile) {
+                    currentFragment = "editProfile";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, new EditProfileFragment()).commit();
                 } else if (itemId == R.id.nav_health_precaution) {
+                    currentFragment = "healthPrecaution";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, new HealthPrecautionFragment()).commit();
-                } else if (itemId == R.id.nav_blog) {
-                    Intent intent = new Intent();
-                    intent.setAction(Intent.ACTION_VIEW);
-                    intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                    intent.setData(Uri.parse("http://179.61.192.4/~tatwadar/index.php/blog/"));
-                    startActivity(intent);
-                } else if (itemId == R.id.nav_contact_us) {
-                    Intent newIntent = new Intent();
-                    newIntent.setAction(Intent.ACTION_VIEW);
-                    newIntent.addCategory(Intent.CATEGORY_BROWSABLE);
-                    newIntent.setData(Uri.parse("http://179.61.192.4/~tatwadar/index.php/contact-us/"));
-                    startActivity(newIntent);
-                } else if (itemId == R.id.nav_about_us) {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container, new DeveloperFragment()).commit();
                 } else if (itemId == R.id.nav_log_out) {
                     logOut();
                 }
@@ -148,6 +120,47 @@ public class MainActivity extends AppCompatActivity {
             currentFragment = "home";
         }
 
+        fetchProfileData();
+    }
+
+    private void fetchProfileData() {
+        FirebaseFirestore.getInstance().collection("Patients")
+                .whereEqualTo("phone", authNumber).get()
+                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot doc : queryDocumentSnapshots) {
+                            patientName = doc.getString("name");
+                            String email = doc.getString("email");
+                            updateNavHeader(patientName, email, null);
+                            break;
+                        }
+                    }
+                });
+    }
+
+    public void updateNavHeader(String name, String email, Uri localImageUri) {
+        View headerView = navigationView.getHeaderView(0);
+        TextView textViewName = headerView.findViewById(R.id.text_view_hospital_name);
+        TextView textViewEmail = headerView.findViewById(R.id.text_view_hospital_email);
+        final CircleImageView profileImage = headerView.findViewById(R.id.hospital_logo_image);
+
+        if (name != null) textViewName.setText(name);
+        if (email != null) textViewEmail.setText(email);
+
+        if (localImageUri != null) {
+            Picasso.get().load(localImageUri).placeholder(R.drawable.ic_e_clinic_logo).into(profileImage);
+        } else {
+            StorageReference ref = FirebaseStorage.getInstance().getReference("PatientImages").child(authNumber + ".jpeg");
+            ref.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    // Use a timestamp to bypass Picasso's cache if the image was recently updated
+                    Picasso.get().load(uri.toString() + "?t=" + System.currentTimeMillis())
+                            .placeholder(R.drawable.ic_e_clinic_logo).into(profileImage);
+                }
+            });
+        }
     }
 
     private void logOut() {

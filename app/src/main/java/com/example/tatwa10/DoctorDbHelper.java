@@ -119,20 +119,22 @@ public class DoctorDbHelper extends SQLiteOpenHelper {
         // Check if doctor already exists
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_NAME + " = ?",
                 new String[] { name });
-        if (cursor.getCount() > 0) {
-            cursor.close();
-            return; // Doctor already exists
-        }
+        boolean exists = cursor.getCount() > 0;
         cursor.close();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COLUMN_NAME, name);
         contentValues.put(COLUMN_PASSWORD, password);
-        contentValues.put(COLUMN_SPECIFICATION, "General Physician");
-        contentValues.put(COLUMN_QUALIFICATION, "MBBS");
-        contentValues.put(COLUMN_DESCRIPTION, "Experienced Doctor");
-        contentValues.put(COLUMN_IMAGEURI, R.drawable.male);
-        db.insert(TABLE_NAME, null, contentValues);
+
+        if (exists) {
+            db.update(TABLE_NAME, contentValues, COLUMN_NAME + " = ?", new String[] { name });
+        } else {
+            contentValues.put(COLUMN_NAME, name);
+            contentValues.put(COLUMN_SPECIFICATION, "General Physician");
+            contentValues.put(COLUMN_QUALIFICATION, "MBBS");
+            contentValues.put(COLUMN_DESCRIPTION, "Experienced Doctor");
+            contentValues.put(COLUMN_IMAGEURI, R.drawable.male);
+            db.insert(TABLE_NAME, null, contentValues);
+        }
     }
 
     // Check doctor credentials

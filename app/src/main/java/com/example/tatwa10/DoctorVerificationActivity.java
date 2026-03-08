@@ -87,7 +87,7 @@ public class DoctorVerificationActivity extends AppCompatActivity {
                 finish();
             } else {
                 Toast.makeText(DoctorVerificationActivity.this,
-                        "Incorrect Password. Try:\nDr. Ajay Kumar - ajay12345\nDr. Saurav Kalsoor - saurav123",
+                        "Incorrect Password. Try:\nDr Adiveppa Hosangadi - adiveppa123\nDr Amruth - amruth12345",
                         Toast.LENGTH_LONG).show();
             }
         }

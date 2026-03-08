@@ -42,22 +42,6 @@
         android:title="Communicate">
         <menu>
             <item
-                android:icon="@drawable/ic_blog"
-                android:title="Blog"
-                android:id="@+id/nav_blog"/>
-
-            <group>
-                <item
-                    android:icon="@drawable/ic_contact_us"
-                    android:title="Contact Us"
-                    android:id="@+id/nav_contact_us"/>
-                <item
-                    android:icon="@drawable/ic_person_pin_black_24dp"
-                    android:title="About Developer"
-                    android:id="@+id/nav_about_us"/>
-            </group>
-
-            <item
                 android:icon="@drawable/ic_log_out"
                 android:title="Log Out"
                 android:id="@+id/nav_log_out"/>

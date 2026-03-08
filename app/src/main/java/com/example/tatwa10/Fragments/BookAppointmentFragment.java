@@ -158,6 +158,12 @@ public class BookAppointmentFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (queryDocumentSnapshots == null || queryDocumentSnapshots.isEmpty()) {
+                            Toast.makeText(getContext(), "Doctor not found in database or no slots available. Please set up the Doctors collection in Firebase.",
+                                    Toast.LENGTH_LONG).show();
+                            dialog.cancel();
+                            return;
+                        }
                         for (DocumentSnapshot doc : queryDocumentSnapshots) {
                             doctor = doc.toObject(Doctor.class);
                             doctorId = doc.getId();
@@ -168,7 +174,7 @@ public class BookAppointmentFragment extends Fragment {
                             listTomorrow = doctor.getSlotTomorrow();
                             continueLoading();
                         } else {
-                            Toast.makeText(getContext(), "Doctor not found in database. Please try again.",
+                            Toast.makeText(getContext(), "Failed to parse doctor data. Please check your Firestore schema.",
                                     Toast.LENGTH_LONG).show();
                             dialog.cancel();
                         }

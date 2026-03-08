@@ -158,6 +158,13 @@ public class PaymentActivity extends AppCompatActivity {
             String docName = getIntent().getStringExtra("docName");
             String date = getIntent().getStringExtra("date");
             String time = getIntent().getStringExtra("time");
+
+            if (docName == null || date == null || time == null) {
+                Toast.makeText(PaymentActivity.this, "Error: Missing appointment details. Please try again.", Toast.LENGTH_LONG).show();
+                finish();
+                return;
+            }
+
             Appointment appointment = new Appointment(authNumber,docName,date,time,false,false,MainActivity.patientName);
 
             CollectionReference collectionReference = FirebaseFirestore.getInstance().collection("Appointments");

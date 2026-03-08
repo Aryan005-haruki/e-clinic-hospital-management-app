@@ -14,6 +14,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.content.Context;
 
 import com.example.tatwa10.ModelClass.Profile;
 import com.google.firebase.auth.FirebaseAuth;
@@ -103,6 +106,9 @@ public class AddProfileActivity extends AppCompatActivity {
         } else if (imageUri == null) {
             Toast.makeText(AddProfileActivity.this, "Please Add an Image", Toast.LENGTH_SHORT).show();
             return;
+        } else if (!isConnectionAvailable(this)) {
+            Toast.makeText(AddProfileActivity.this, "No Internet Connection. Please check and try again.", Toast.LENGTH_LONG).show();
+            return;
         } else {
 
             StorageReference filepath = FirebaseStorage.getInstance().getReference("PatientImages")
@@ -141,6 +147,19 @@ public class AddProfileActivity extends AppCompatActivity {
         } else if (resultCode == UCrop.RESULT_ERROR) {
             Toast.makeText(AddProfileActivity.this, "Error Occurred while cropping Image", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo netInfo = connectivityManager.getActiveNetworkInfo();
+            if (netInfo != null && netInfo.isConnected()
+                    && netInfo.isConnectedOrConnecting()
+                    && netInfo.isAvailable()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

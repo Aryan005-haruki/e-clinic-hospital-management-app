@@ -187,6 +187,12 @@ public class EditProfileFragment extends Fragment {
         if (imageUri != null) {
             filepath.putFile(imageUri);
         }
+
+        // Update Navigation Header in MainActivity
+        if (getActivity() instanceof MainActivity) {
+            ((MainActivity) getActivity()).updateNavHeader(name, email, imageUri);
+        }
+
         Toast.makeText(getContext(), "Profile Updated Successfully", Toast.LENGTH_SHORT).show();
         getParentFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
 

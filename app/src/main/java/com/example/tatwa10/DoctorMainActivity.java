@@ -50,18 +50,23 @@ public class DoctorMainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int itemId = item.getItemId();
                 if (itemId == R.id.nav_home2) {
+                    currentFragment = "home";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container_doctor, new HomeDoctorsFragment()).commit();
                 } else if (itemId == R.id.nav_approve_appointment2) {
+                    currentFragment = "approveAppointment";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container_doctor, new ApproveAppointmentFragment()).commit();
                 } else if (itemId == R.id.nav_pending_appointment2) {
+                    currentFragment = "pendingAppointment";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container_doctor, new PendingAppointmentFragment()).commit();
                 } else if (itemId == R.id.nav_completed_appointment2) {
+                    currentFragment = "completedAppointment";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container_doctor, new CompletedAppointmentFragment()).commit();
                 } else if (itemId == R.id.nav_prescription2) {
+                    currentFragment = "prescription";
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container_doctor, new PatientPrescriptionFragment()).commit();
                 } else if (itemId == R.id.nav_log_out2) {
@@ -117,7 +122,8 @@ public class DoctorMainActivity extends AppCompatActivity {
                         editor.clear(); // Clear all data
                         editor.apply();
 
-                        Toast.makeText(DoctorMainActivity.this, "Logged Out Successfully", Toast.LENGTH_SHORT).show();
+                        String name = (doctorName != null) ? doctorName : "Doctor";
+                        Toast.makeText(DoctorMainActivity.this, name + " Logged Out Successfully", Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(DoctorMainActivity.this, StartingActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
